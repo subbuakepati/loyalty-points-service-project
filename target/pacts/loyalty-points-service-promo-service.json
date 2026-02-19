@@ -1,0 +1,69 @@
+{
+  "consumer": {
+    "name": "loyalty-points-service"
+  },
+  "interactions": [
+    {
+      "description": "GET promo for SUMMER25",
+      "key": "4d754e66",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "Promo code SUMMER25 exists and is near expiry"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/promo/SUMMER25"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "bonusPercent": 25,
+            "expiresSoon": true
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.bonusPercent": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.expiresSoon": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pact-jvm": {
+      "version": "4.3.16"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "promo-service"
+  }
+}

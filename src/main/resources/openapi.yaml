@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Loyalty Points Quote API
+  version: 1.0.0
+paths:
+  /v1/points/quote:
+    post:
+      summary: Calculate loyalty points
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteRequest'
+      responses:
+        '200':
+          description: Successful quote
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Upstream service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    QuoteRequest:
+      type: object
+      required: [fareAmount, currency, cabinClass, customerTier]
+      properties:
+        fareAmount:
+          type: number
+          minimum: 0.01
+        currency:
+          type: string
+          enum: [USD, EUR, INR]
+        cabinClass:
+          type: string
+          enum: [ECONOMY, BUSINESS, FIRST]
+        customerTier:
+          type: string
+          enum: [NONE, SILVER, GOLD, PLATINUM]
+        promoCode:
+          type: string
+    QuoteResponse:
+      type: object
+      properties:
+        basePoints:
+          type: integer
+        tierBonus:
+          type: integer
+        promoBonus:
+          type: integer
+        totalPoints:
+          type: integer
+          maximum: 50000
+        effectiveFxRate:
+          type: number
+        warnings:
+          type: array
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+        path:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        correlationId:
+          type: string
